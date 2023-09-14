@@ -2,6 +2,25 @@
 ## Introduction
 This is a localhost-based web application for image segmentation.
 
+## Work Principles
+The front-end is developed by `html5` + `css3` + `javascript`, and the back-end is developed by `Python` with third-party libraries.
+When the application is running, it will open a localhost server, and the front-end will send requests to the server.
+If the front-end sends a `GET` request, the server will open the home page.
+If the front-end sends a `POST` request, the server will segment the image and return the result.
+Because the application is localhost-based, it is unnecessary to transfer the file between the logical client and server,
+path of the file is enough.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Server
+    Client->>Server: GET
+    Server->>Client: RESPONSE: the home page
+    Client->>Server: POST: the file path and parameters
+    Server->>Server: Segmentation
+    Server->>Client: RESPONSE: the result
+```
+
 ## Back-end
 ### Setup
 The back-end server is developed by `Python` with third-party libraries.
