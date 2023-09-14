@@ -1,0 +1,2 @@
+This is the folder to store model checkpoint. Please download the `ViT-H SAM model`.
+See `https://github.com/facebookresearch/segment-anything#model-checkpoints` for more details.
