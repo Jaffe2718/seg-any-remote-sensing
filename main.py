@@ -1,6 +1,6 @@
 import webbrowser, pathlib
 from flask import Flask, render_template, request, abort
-from my_lib import port, seg_any
+from my_lib import port, raster_meta, seg_any
 
 app = Flask(__name__,
             static_folder=pathlib.Path(__file__).parent.absolute() / 'static',
@@ -34,6 +34,17 @@ def handle_data():
                             crop_n_points_downscale_factor=data['crop_n_points_downscale_factor'],
                             min_mask_region_area=data['min_mask_region_area'])
             return 'ok'
+        except Exception as e:
+            print(e)
+            return abort(400, description='invalid data:' + e.__str__())
+
+@app.route('/raster_meta', methods=['POST'])
+def handle_raster_meta():
+    if request.data:
+        raw_ = request.data.decode('utf-8')
+        print(raw_)
+        try:
+            return raster_meta.get_raster_meta(raw_)
         except Exception as e:
             print(e)
             return abort(400, description='invalid data:' + e.__str__())
