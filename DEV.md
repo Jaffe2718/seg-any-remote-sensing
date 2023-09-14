@@ -50,14 +50,19 @@ Run the server:
 python main.py
 ```
 
+## Front-end
+
 ### Interact with the server
 The server can handle `GET` and `POST` requests.
 It is recommended to use `JavaScript` to interact with the server.
 
 #### GET
+##### Get https://localhost:xxxxx/
 While a `GET` request is sent to the server, the server will open the home page.
 
 #### POST
+
+##### Post to https://localhost:xxxxx/
 While a `POST` request is sent to the server, the server will segment the image and return the result.
 The data should be stringified `JSON` format or can be parsed as python `dict` object, encoded in `UTF-8`.
 These are the essential keys in the `JSON` object:
@@ -95,8 +100,27 @@ For example:
 curl -H  "Content-Type: application/json" -X POST -d "{'src_raster': 'E:/Coding/python/seg-any/example/dataset/src/hunnu_1m.tif', 'out_raster': 'E:/Coding/python/seg-any/example/dataset/export/hunnu_1x1m.tif', 'rgb_index': [3, 2, 1], 'points_per_side': 64, 'points_per_batch': 64, 'pred_iou_thresh': 0.88, 'stability_score_thresh': 0.95, 'stability_score_offset': 1.0, 'box_nms_thresh': 0.7, 'crop_n_layers': 0, 'crop_nms_thresh': 0.7, 'crop_overlap_ratio': 512 / 1500, 'crop_n_points_downscale_factor': 1, 'min_mask_region_area': 100}" "http://localhost:64194/"
 ```
 
+##### Post to https://localhost:xxxxx/raster_meta
+While a `POST` request is sent to the server, the server will return the meta data of the raster as `JSON` format.
 
-## Front-end
+Example:
+```python
+import requests
+import pathlib
+
+raster_path = pathlib.Path(__file__).parent.absolute() / 'dataset' / 'src' / 'hunnu.tif'
+res = requests.post('http://localhost:26694/raster_meta', data=str(raster_path.absolute()))
+print(res.content.decode('utf-8'))
+```
+Terminal output:
+```plaintext
+D:\anaconda3\envs\seg_any\python.exe E:\Coding\python\seg-any\example\test_meta.py 
+{"width": 1207, "height": 1237, "X resolution": 1.0, "Y resolution": -1.0, "band_count": 3, "band_meta": [{"description": "", "min": 0.0, "max": 255.0, "nodata": -1.0, "scale": null, "offset": null}, {"description": "", "min": 0.0, "max": 255.0, "nodata": -1.0, "scale": null, "offset": null}, {"description": "", "min": 0.0, "max": 255.0, "nodata": -1.0, "scale": null, "offset": null}]}
+
+Process finished with exit code 0
+```
+
+### Develop
 Please using `html5` + `css3` + `javascript` to develop the front-end.
 - there must be a `index.html` file in `templates` folder, as the home page.
 - for `*.html` files except `index.html`, please put them in `static` folder.
