@@ -1,5 +1,5 @@
 // this is an example of a POST request using fetch
-// TODO: delete this file if you don't need it
+// TODO delete this file if you don't need it
 
 let url = document.URL;
 window.alert(url);
