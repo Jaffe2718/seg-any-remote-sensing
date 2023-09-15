@@ -104,12 +104,10 @@ def handle_segment():
 
     * Use the uploaded raster file as the source raster.
 
-    * This method is will create 2 cached files:
-    1. The segmentation mask raster (GeoTiff)
-    2. The preview image of the segmentation mask (PNG)
+    * This method is will create 1 cached file: the segmentation mask raster (GeoTiff)
 
     * Receives a JSON object with the following fields:
-    - out_raster: name of the output raster file (GeoTiff), in the cache folder
+    - out_raster: name of the output raster file (GeoTiff), in the cache folder, must end with '.tif'
     - rgb_index: index of the RGB bands (begin from 1) in the source raster file, json array like [3, 2, 1]
     - points_per_side: number of points per side of the square (integer)
     - points_per_batch: number of points per batch (integer)
