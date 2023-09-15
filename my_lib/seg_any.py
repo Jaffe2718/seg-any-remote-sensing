@@ -1,8 +1,11 @@
 from typing import Optional
-from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
+
 import numpy as np
 from osgeo import gdal
+from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
+
 from . import chpt
+
 
 def segment(src_raster: str,
             out_raster: str,
@@ -35,7 +38,6 @@ def segment(src_raster: str,
     :param min_mask_region_area:
     '''
 
-
     # load model
     sam = sam_model_registry['vit_h'](checkpoint=chpt)
     mask_generator = SamAutomaticMaskGenerator(sam,
@@ -65,13 +67,9 @@ def segment(src_raster: str,
 
     # export
     driver = gdal.GetDriverByName('GTiff')
-    dataset = driver.Create(out_raster, bands_mat.shape[1], bands_mat.shape[0], 1, gdal.GDT_Byte)
+    dataset = driver.Create(out_raster, bands_mat.shape[1], bands_mat.shape[0], 1, gdal.GDT_Int16)
     dataset.SetGeoTransform(raster.GetGeoTransform())
     dataset.GetRasterBand(1).SetNoDataValue(-1)
     dataset.GetRasterBand(1).WriteArray(matrix)
     dataset.SetProjection(raster.GetProjection())
     dataset.FlushCache()
-
-    # close
-    raster = None
-    dataset = None

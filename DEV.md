@@ -3,22 +3,59 @@
 This is a localhost-based web application for image segmentation.
 
 ## Work Principles
-The front-end is developed by `html5` + `css3` + `javascript`, and the back-end is developed by `Python` with third-party libraries.
-When the application is running, it will open a localhost server, and the front-end will send requests to the server.
-If the front-end sends a `GET` request, the server will open the home page.
-If the front-end sends a `POST` request, the server will segment the image and return the result.
-Because the application is localhost-based, it is unnecessary to transfer the file between the logical client and server,
-path of the file is enough.
+The front-end is developed by `html5` + `css3` + `javascript`, 
+and the back-end is developed by `Python` with third-party libraries.
+When the back-end server is running, the front-end can send `GET` and `POST` requests to the server.
 
 ```mermaid
 sequenceDiagram
     participant Client
     participant Server
-    Client->>Server: GET
-    Server->>Client: RESPONSE: the home page
-    Client->>Server: POST: the file path and parameters
-    Server->>Server: Segmentation
-    Server->>Client: RESPONSE: the result
+    
+    critical View Home Page
+        Client->>Server: GET: /
+        Server->>Client: Response: 200 Show index.html
+    end
+    
+    critical Upload Raster
+        Client->>Server: POST: /upload (raster file)
+        Server->>Server: Cache raster file
+        Server->>Client: Response: 200 OK
+    end
+    
+    critical Upload Raster Meta
+        Client->>Server: POST: /upload_cfg (raster meta file)
+        Server->>Server: Cache raster meta file (.tfw, .prj, .aux.xml, .ovr, .rrd, [.etc])
+        Server->>Client: Response: 200 OK
+    end
+    
+    critical View Raster Meta
+        Client->>Server: GET: /raster_meta (raster file name)
+        Server->>Client: Response: 200 raster meta data (json)
+    end
+
+    critical Preview Raster as RGB PNG
+        Client->>Server: POST: /preview_raster (json)
+        Server->>Server: Generate preview png for raster by reading band index from json
+        Server->>Client: Response: 200 preview png (not for download)
+    end
+    
+    critical Segment Raster
+        Client->>Server: POST: /segment (json)
+        Server->>Server: Segment raster as mask by reading band index from json
+        Server->>Client: Response: 200 OK
+    end
+    
+    critical Preview Mask PNG
+        Client->>Server: GET: /preview_mask
+        Server->>Server: Generate preview png for segmented mask
+        Server->>Client: Response: 200 preview png (not for download)
+    end
+    
+    critical Download Mask Raster
+        Client->>Server: GET: /download
+        Server->>Client: Response: 200 download mask (raster file)
+    end
 ```
 
 ## Back-end
@@ -56,69 +93,77 @@ python main.py
 The server can handle `GET` and `POST` requests.
 It is recommended to use `JavaScript` to interact with the server.
 
-#### GET
-##### Get https://localhost:xxxxx/
-While a `GET` request is sent to the server, the server will open the home page.
+### GET
+- `localhost:[port]/` : get the home page;
+- `localhost:[port]/preview_mask` : get the preview mask png;
+- `localhost:[port]//raster_meta` : get the raster metadata as json;
+- `localhost:[port]/download` : download the segmented mask raster file.
 
-#### POST
+### POST
+- `localhost:[port]/upload` : upload the raster file;
+- `localhost:[port]/upload_cfg` : upload the raster config file;
+- `localhost:[port]/preview_raster` : get the preview raster png;
+- `localhost:[port]/segment` : segment the raster file.
 
-##### Post to https://localhost:xxxxx/
-While a `POST` request is sent to the server, the server will segment the image and return the result.
-The data should be stringified `JSON` format or can be parsed as python `dict` object, encoded in `UTF-8`.
-These are the essential keys in the `JSON` object:
-- `src_raster`: the source image path, string.
-- `out_raster`: the output image path, string, must be a `GeoTIFF` file.
-- `rgb_index`: the index of the RGB band, list of int which begins from 1, length 3, like `[3, 2, 1]`, means `R=band3, G=band2, B=band1`.
-- `points_per_side`: The number of points to be sampled along one side of the image. The total number of points is points_per_side**2. If None, 'point_grids' must provide explicit point sampling.
-- `points_per_batch`: Sets the number of points run simultaneously
-            by the model. Higher numbers may be faster but use more GPU memory.
-          pred_iou_thresh (float): A filtering threshold in [0,1], using the
-            model's predicted mask quality, int.
-- `stability_score_thresh`: A filtering threshold in [0,1], using
-            the stability of the mask under changes to the cutoff used to binarize
-            the model's mask predictions, float.
-- `stability_score_offset`: The amount to shift the cutoff when
-            calculated the stability score, float.
-- `box_nms_thresh`: The box IoU cutoff used by non-maximal
-            suppression to filter duplicate masks, float.
-- `crop_n_layers`: If >0, mask prediction will be run again on
-            crops of the image. Sets the number of layers to run, where each
-            layer has 2**i_layer number of image crops, int.
-- `crop_nms_thresh`: The box IoU cutoff used by non-maximal
-            suppression to filter duplicate masks between different crops.
-- `crop_overlap_ratio`: Sets the degree to which crops overlap.
-            In the first crop layer, crops will overlap by this fraction of
-            the image length. Later layers with more crops scale down this overlap, float.
-- `crop_n_points_downscale_factor`: The number of points-per-side
-            sampled in layer n is scaled down by crop_n_points_downscale_factor**n, int.
-- `min_mask_region_area`: If >0, postprocessing will be applied
-            to remove disconnected regions and holes in masks with area smaller
-            than min_mask_region_area. Requires opencv. int.
-
-For example:
-```bash
-curl -H  "Content-Type: application/json" -X POST -d "{'src_raster': 'E:/Coding/python/seg-any/example/dataset/src/hunnu_1m.tif', 'out_raster': 'E:/Coding/python/seg-any/example/dataset/export/hunnu_1x1m.tif', 'rgb_index': [3, 2, 1], 'points_per_side': 64, 'points_per_batch': 64, 'pred_iou_thresh': 0.88, 'stability_score_thresh': 0.95, 'stability_score_offset': 1.0, 'box_nms_thresh': 0.7, 'crop_n_layers': 0, 'crop_nms_thresh': 0.7, 'crop_overlap_ratio': 512 / 1500, 'crop_n_points_downscale_factor': 1, 'min_mask_region_area': 100}" "http://localhost:64194/"
-```
-
-##### Post to https://localhost:xxxxx/raster_meta
-While a `POST` request is sent to the server, the server will return the meta data of the raster as `JSON` format.
-
-Example:
+### Example
 ```python
 import requests
-import pathlib
+import json
 
-raster_path = pathlib.Path(__file__).parent.absolute() / 'dataset' / 'src' / 'hunnu.tif'
-res = requests.post('http://localhost:26694/raster_meta', data=str(raster_path.absolute()))
-print(res.content.decode('utf-8'))
-```
-Terminal output:
-```plaintext
-D:\anaconda3\envs\seg_any\python.exe E:\Coding\python\seg-any\example\test_meta.py 
-{"width": 1207, "height": 1237, "X resolution": 1.0, "Y resolution": -1.0, "band_count": 3, "band_meta": [{"description": "", "min": 0.0, "max": 255.0, "nodata": -1.0, "scale": null, "offset": null}, {"description": "", "min": 0.0, "max": 255.0, "nodata": -1.0, "scale": null, "offset": null}, {"description": "", "min": 0.0, "max": 255.0, "nodata": -1.0, "scale": null, "offset": null}]}
+port = 5000      # TODO: change the port number for your server
 
-Process finished with exit code 0
+# test GET / -> home page
+r0 = requests.get('http://localhost:{}/'.format(port))
+print(r0.text)
+
+# test POST /upload
+ras_pth = 'path/to/raster/file.tif'
+r1 = requests.post('http://localhost:{}/upload'.format(port), files={'file': open(ras_pth, 'rb')})
+print(r1.status_code)
+
+# test POST /upload_cfg
+cfg_pth = 'path/to/raster/file.tfw'
+r2 = requests.post('http://localhost:{}/upload_cfg'.format(port), files={'file': open(cfg_pth, 'rb')})
+print(r2.status_code)
+
+# test GET /raster_meta
+r3 = requests.get('http://localhost:{}/raster_meta'.format(port))
+print(r3.content)
+
+# test POST /preview_raster
+r4 = requests.post('http://localhost:{}/preview_raster'.format(port), json={"r": 3, "g": 2, "b": 1})
+print(r4.status_code)
+
+# test POST /segment
+data_dict = {
+    "out_raster": "out.tif",
+    "rgb_index": [3, 2, 1],
+    "points_per_side": 64,
+    "points_per_batch": 64,
+    "pred_iou_thresh": 0.88,
+    "stability_score_thresh": 0.95,
+    "stability_score_offset": 1.0,
+    "box_nms_thresh": 0.7,
+    "crop_n_layers": 0,
+    "crop_nms_thresh": 0.7,
+    "crop_overlap_ratio": 512 / 1500,
+    "crop_n_points_downscale_factor": 1,
+    "min_mask_region_area": 100
+}
+r5 = requests.post('http://localhost:{}/segment'.format(port), json=data_dict)
+print(r5.status_code)
+
+# test GET /preview_mask
+r6 = requests.get('http://localhost:{}/preview_mask'.format(port))
+print(r6.status_code)
+
+# test GET /download
+r7 = requests.get('http://localhost:{}/download'.format(port))
+with open('out.tif', 'wb') as f:
+    f.write(r7.content)
 ```
+
+
 
 ### Develop
 Please using `html5` + `css3` + `javascript` to develop the front-end.
