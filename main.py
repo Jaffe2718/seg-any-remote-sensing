@@ -1,4 +1,6 @@
 import pathlib
+import socket
+import sys
 import webbrowser
 
 from flask import Flask, render_template, request, abort, send_file, jsonify
@@ -15,7 +17,7 @@ app.config['preview_raster_png'] = ''  # no preview image initially
 app.config['preview_mask_png'] = ''    # no preview image initially
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     """
     Show the index page. (Home page)
@@ -183,9 +185,27 @@ def handle_download():
 
 
 if __name__ == '__main__':
+    ipv4_addr = socket.gethostbyname(socket.gethostname())
     t_clean = cleaner.CleanerThread(path=str(app.config['cache_path']))
     t_clean.start()
     # get random port
     port = port.get_available_port()
-    webbrowser.open('http://localhost:' + str(port))
-    app.run(host='localhost', port=port)
+    if sys.argv.__len__() > 1:
+        if sys.argv[1] == '--headless':
+            pass                                          # do not open the web page
+        elif sys.argv[1] == '--help':
+            print('Usage: python main.py [OPTION]')
+            print('Options:')
+            print('  (no argument)\t\topen the web page')
+            print('  --headless\t\tdo not open the web page')
+            print('  --help\t\tshow this help message and exit')
+            print('  --host-port=HOST:PORT\tspecify the host and port to listen on (forced headless mode)')
+            exit(0)
+        elif '--host-port=' in sys.argv[1]:
+            port = int(sys.argv[1].replace('--host-port=', '').split(':')[1])
+            ipv4_addr = sys.argv[1].replace('--host-port=', '').split(':')[0]
+        else:
+            raise Exception('invalid argument')
+    else:
+        webbrowser.open(f'http://{ipv4_addr}:{port}')     # open the web page in the default browser
+    app.run(host=ipv4_addr, port=port)
