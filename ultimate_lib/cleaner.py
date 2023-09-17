@@ -2,6 +2,8 @@ import os
 import threading
 import time
 
+from ultimate_lib import client_info
+
 
 class CleanerThread(threading.Thread):
     def __init__(self,
@@ -25,5 +27,34 @@ class CleanerThread(threading.Thread):
                         # if the dir is empty, delete it
                         if not os.listdir(os.path.join(root, dir_)):
                             os.rmdir(os.path.join(root, dir_))
+            except:
+                pass
+
+
+class CleanClientThread(threading.Thread):
+
+    """
+    This thread is used to clean the clients:
+    - when a client is older than 7 days, delete it.
+    - when a client is older than 1 hour and not a human, delete it.
+    """
+
+    clients: dict[str, client_info.ClientInfo] = {}
+
+    def __init__(self,
+                 clients: dict[str, client_info.ClientInfo],
+                 *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.clients = clients
+
+    def run(self):
+        while True:
+            try:
+                time.sleep(3600)
+                # iterate all keys in the dict `self.clients`
+                for key in self.clients.keys():
+                    # if the client is older than 7 days, delete it
+                    if time.time() - self.clients[key].connected_time > 604800:
+                        del self.clients[key]
             except:
                 pass
