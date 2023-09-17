@@ -9,13 +9,27 @@ from flask import Flask, render_template, request, abort, send_file, jsonify, ma
 
 from ultimate_lib import cleaner, raster_meta, seg_any, client_info, human_check
 
-'''
+__doc__ = """
 In Ultimate version, the server will be able to handle multiple clients at the same time.
 
 - Each client will be assigned a UUID, which will be stored in the cookie of the client.
 - When a new client connects to the server, the server will check if the client has cookie and is human.
 - The client info will be expired after 7 days.
-'''
+
+This program uses Flask to build the server. See https://flask.palletsprojects.com/
+And uses Segment Anything | Meta AI Research Lab to segment the raster. See https://segment-anything.com/
+
+Use Pillow to process the image. See https://pillow.readthedocs.io/en/stable/
+The Python Imaging Library (PIL) is
+
+    Copyright © 1997-2011 by Secret Labs AB
+    Copyright © 1995-2011 by Fredrik Lundh
+
+Pillow is the friendly PIL fork. It is
+
+    Copyright © 2010-2023 by Jeffrey A. Clark (Alex) and contributors.
+
+"""
 
 app = Flask(__name__,
             static_folder=pathlib.Path(__file__).parent.absolute() / 'static',
@@ -43,6 +57,7 @@ def index():
             (app.config['cache_root'] / c_uuid).mkdir()  # make cache folder for the client
         # human check here
         time.sleep(app.config['client_info'][c_uuid].force_delay)
+        delay_increase(c_uuid)
         question_img, correct_answer = human_check.make_question()
         question_img.save(str(app.config['cache_root'] / c_uuid / 'question.png'))  # cache question image
         app.config['client_info'][c_uuid].answer = correct_answer  # store the answer
@@ -58,6 +73,7 @@ def index():
             res.set_cookie('uuid', c_uuid)  # set cookie
             # human check here
             time.sleep(app.config['client_info'][c_uuid].force_delay)
+            delay_increase(c_uuid)
             question_img, correct_answer = human_check.make_question()
             app.config['client_info'][c_uuid].answer = correct_answer
             question_img.save(str(app.config['cache_root'] / c_uuid / 'question.png'))  # cache question image
@@ -66,14 +82,16 @@ def index():
             app.config['client_info'][c_uuid].connected_time = time.time()  # update the connected time
             if not app.config['client_info'][c_uuid].is_human:  # human check here
                 time.sleep(app.config['client_info'][c_uuid].force_delay)
+                delay_increase(c_uuid)
                 res = make_response(human_check.gen_page(c_uuid))  # generate the page
+                res.set_cookie('uuid', c_uuid)  # set cookie
                 question_img, correct_answer = human_check.make_question()
                 if not (app.config['cache_root'] / c_uuid).exists():
                     (app.config['cache_root'] / c_uuid).mkdir()
                 question_img.save(str(app.config['cache_root'] / c_uuid / 'question.png'))
                 app.config['client_info'][c_uuid].answer = correct_answer
                 return res
-    return render_template('index.html')
+        return render_template('index.html')
 
 
 @app.route('/human_check', methods=['POST'])
@@ -87,18 +105,26 @@ def handle_human_check():
     answer = int(request.json['answer'])
     if app.config['client_info'][client_id].answer == answer:
         app.config['client_info'][client_id].is_human = True
-        app.config['client_info'][client_id].force_delay = 0.2
-        # jump to the home page
+        app.config['client_info'][client_id].force_delay = 0.2    # reset the delay time
     elif not app.config['client_info'][client_id].is_human:
-        # increase the delay time to avoid DDOS
-        if app.config['client_info'][client_id].force_delay < 1:
-            app.config['client_info'][client_id].force_delay = 1
-        elif app.config['client_info'][client_id].force_delay < 1024:
-            app.config['client_info'][client_id].force_delay *= 2
-        else:
-            app.config['client_info'][client_id].force_delay *= 1024
-        # refresh the page
-    return index()
+        delay_increase(client_id)  # increase the delay time to avoid DDOS
+    return index()  # return the index page or human check page
+
+
+def delay_increase(client_id: str):
+    """
+    Increase the delay time to avoid DDOS.
+    :param client_id: the client id
+    """
+    global app
+    if app.config['client_info'][client_id].force_delay < 1:
+        app.config['client_info'][client_id].force_delay = 1
+    elif app.config['client_info'][client_id].force_delay < 8:
+        app.config['client_info'][client_id].force_delay += 1
+    elif app.config['client_info'][client_id].force_delay < 1024:
+        app.config['client_info'][client_id].force_delay *= 2
+    else:
+        app.config['client_info'][client_id].force_delay *= 1024
 
 
 @app.route('/upload', methods=['POST'])
@@ -302,6 +328,7 @@ def handle_download():
 
 
 if __name__ == '__main__':
+    print(__doc__)
     for root, dirs, files in os.walk(str(app.config['cache_root'])):  # clean the cache folder first
         for file in files:
             os.remove(os.path.join(root, file))
