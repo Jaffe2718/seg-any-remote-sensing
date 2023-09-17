@@ -41,7 +41,7 @@ def index():
         res.set_cookie('uuid', c_uuid)  # set cookie
         if not (app.config['cache_root'] / c_uuid).exists():
             (app.config['cache_root'] / c_uuid).mkdir()  # make cache folder for the client
-        # TODO: human check here
+        # human check here
         time.sleep(app.config['client_info'][c_uuid].force_delay)
         question_img, correct_answer = human_check.make_question()
         question_img.save(str(app.config['cache_root'] / c_uuid / 'question.png'))  # cache question image
@@ -56,7 +56,7 @@ def index():
                 (app.config['cache_root'] / c_uuid).mkdir()  # make cache folder for the client
             res = make_response(human_check.gen_page(c_uuid))  # generate the page
             res.set_cookie('uuid', c_uuid)  # set cookie
-            # TODO: human check here
+            # human check here
             time.sleep(app.config['client_info'][c_uuid].force_delay)
             question_img, correct_answer = human_check.make_question()
             app.config['client_info'][c_uuid].answer = correct_answer
@@ -64,7 +64,7 @@ def index():
             return res
         else:  # valid client
             app.config['client_info'][c_uuid].connected_time = time.time()  # update the connected time
-            if not app.config['client_info'][c_uuid].is_human:  # TODO: human check here
+            if not app.config['client_info'][c_uuid].is_human:  # human check here
                 time.sleep(app.config['client_info'][c_uuid].force_delay)
                 res = make_response(human_check.gen_page(c_uuid))  # generate the page
                 question_img, correct_answer = human_check.make_question()
