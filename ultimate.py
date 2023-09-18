@@ -1,3 +1,29 @@
+__doc__ = """
+In Ultimate version, the server will be able to handle multiple clients at the same time.
+
+To avoid DDOS attacks, the server adopts the following methods:
+- Each client will be assigned a UUID, which will be stored in the cookie of the client.
+- When a new client connects to the server, the server will check if the client has cookie and is human.
+- The client info cookie will be expired after 7 days.
+- If the client fails the human check, the server will increase the response delay time for the client.
+- Limit IP access frequency: 150/day, 25/hour, 10/minute, 1/second
+
+This program uses Flask to build the server. See https://flask.palletsprojects.com/
+
+It uses Segment Anything | Meta AI Research Lab to segment the raster. See https://segment-anything.com/
+
+Use Pillow to process the image. See https://pillow.readthedocs.io/en/stable/
+    The Python Imaging Library (PIL) is
+    
+        Copyright © 1997-2011 by Secret Labs AB
+        Copyright © 1995-2011 by Fredrik Lundh
+    
+    Pillow is the friendly PIL fork. It is
+    
+        Copyright © 2010-2023 by Jeffrey A. Clark (Alex) and contributors.
+
+"""
+
 import os
 import pathlib
 import socket
@@ -6,34 +32,17 @@ import time
 import uuid
 
 from flask import Flask, render_template, request, abort, send_file, jsonify, make_response
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from ultimate_lib import cleaner, raster_meta, seg_any, client_info, human_check
 
-__doc__ = """
-In Ultimate version, the server will be able to handle multiple clients at the same time.
-
-- Each client will be assigned a UUID, which will be stored in the cookie of the client.
-- When a new client connects to the server, the server will check if the client has cookie and is human.
-- The client info will be expired after 7 days.
-
-This program uses Flask to build the server. See https://flask.palletsprojects.com/
-And uses Segment Anything | Meta AI Research Lab to segment the raster. See https://segment-anything.com/
-
-Use Pillow to process the image. See https://pillow.readthedocs.io/en/stable/
-The Python Imaging Library (PIL) is
-
-    Copyright © 1997-2011 by Secret Labs AB
-    Copyright © 1995-2011 by Fredrik Lundh
-
-Pillow is the friendly PIL fork. It is
-
-    Copyright © 2010-2023 by Jeffrey A. Clark (Alex) and contributors.
-
-"""
 
 app = Flask(__name__,
             static_folder=pathlib.Path(__file__).parent.absolute() / 'static',
             template_folder=pathlib.Path(__file__).parent.absolute() / 'templates')
+limiter = Limiter(app=app, key_func=get_remote_address,                                   # limit the access frequency
+                  default_limits=["150/day", "25/hour", "10/minute", "1/second"])
 
 
 app.config['client_info']: dict[str, client_info.ClientInfo] = {}                         # client info dict
