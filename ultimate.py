@@ -1,6 +1,21 @@
 __doc__ = """
 In Ultimate version, the server will be able to handle multiple clients at the same time.
 
+Modify the configuration.json to change the server configuration:
+- host: the host ip of the server, 'auto' means auto detect the host
+- port: the port of the server
+- debug: whether to enable debug mode
+- multi_thread: whether to enable multi-thread mode to handle multiple clients at the same time
+- ip_access_limit: the limit of the IP access frequency, like:
+    [
+        "150/day",
+        "25/hour",
+        "10/minute",
+        "1/second"
+    ]
+    means 150 times per day, 25 times per hour, 10 times per minute, 1 time per second.
+    For more information, see https://flask-limiter.readthedocs.io/en/stable/configuration.html#ratelimit-string
+
 To avoid DDOS attacks, the server adopts the following methods:
 - Each client will be assigned a UUID, which will be stored in the cookie of the client.
 - When a new client connects to the server, the server will check if the client has cookie and is human.
@@ -24,10 +39,10 @@ Use Pillow to process the image. See https://pillow.readthedocs.io/en/stable/
 
 """
 
+import json
 import os
 import pathlib
 import socket
-import sys
 import time
 import uuid
 
@@ -37,12 +52,14 @@ from flask_limiter.util import get_remote_address
 
 from ultimate_lib import cleaner, raster_meta, seg_any, client_info, human_check
 
+# load configuration.json
+config: dict = json.load(open('configuration.json', 'r'))
 
 app = Flask(__name__,
             static_folder=pathlib.Path(__file__).parent.absolute() / 'static',
             template_folder=pathlib.Path(__file__).parent.absolute() / 'templates')
-limiter = Limiter(app=app, key_func=get_remote_address,                                   # limit the access frequency
-                  default_limits=["150/day", "25/hour", "10/minute", "1/second"])
+limiter = Limiter(app=app, key_func=get_remote_address,                        # limit the access frequency
+                  default_limits=config['ip_access_limit']) if len(config['ip_access_limit']) > 0 else None
 
 
 app.config['client_info']: dict[str, client_info.ClientInfo] = {}                         # client info dict
@@ -350,20 +367,7 @@ if __name__ == '__main__':
     clean_client_thread = cleaner.CleanClientThread(app.config['client_info'])  # start the clean client thread
     clean_client_thread.start()
     # start the server
-    port = 5000
-    ipv4_addr = socket.gethostbyname(socket.gethostname())
-    if sys.argv.__len__() > 1:
-        if '--host-port=' in sys.argv:  # --host-port=10.22.44.66:5100
-            host_port = sys.argv[1].split('=')[1]
-            port = int(host_port.split(':')[1])
-            ipv4_addr = host_port.split(':')[0]
-        elif sys.argv[1] == '--help':
-            print('Usage: python ultimate.py [OPTIONS]')
-            print('Options:')
-            print('  (no option)              run the server on ipv4 address and port 5000')
-            print('  --host-port=HOST:PORT    specify the host and port to run the server')
-            print('  --help                   show this help message and exit')
-            exit(0)
-        else:
-            raise Exception('invalid argument: ' + sys.argv[1])
-    app.run(host=ipv4_addr, port=port, threaded=True)
+    app.run(host=socket.gethostbyname(socket.gethostname()) if config['host'] == 'auto' else config['host'],
+            port=config['port'],
+            debug=config['debug'],
+            threaded=config['multi_thread'])

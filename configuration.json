@@ -1,0 +1,12 @@
+{
+    "host": "auto",
+    "port": 5000,
+    "debug": false,
+    "multi_thread": true,
+    "ip_access_limit": [
+        "150/day",
+        "25/hour",
+        "10/minute",
+        "1/second"
+    ]
+}
