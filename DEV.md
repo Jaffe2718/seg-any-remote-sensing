@@ -72,7 +72,7 @@ Clone the repository first.
 
 Use conda to import the environment:
 ```bash
-conda env create -f environment.yml
+conda env create -f environment.yaml
 ```
 And activate the environment:
 ```bash
