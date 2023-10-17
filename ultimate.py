@@ -46,7 +46,7 @@ import socket
 import time
 import uuid
 
-from flask import Flask, render_template, request, abort, send_file, jsonify, make_response
+from flask import Flask, request, abort, send_file, jsonify, make_response, send_from_directory
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -56,14 +56,14 @@ from ultimate_lib import cleaner, raster_meta, seg_any, client_info, human_check
 config: dict = json.load(open('configuration.json', 'r'))
 
 app = Flask(__name__,
-            static_folder=pathlib.Path(__file__).parent.absolute() / 'static',
+            static_folder=pathlib.Path(__file__).parent.absolute() / 'front_end',
             template_folder=pathlib.Path(__file__).parent.absolute() / 'templates')
 limiter = Limiter(app=app, key_func=get_remote_address,                        # limit the access frequency
                   default_limits=config['ip_access_limit']) if len(config['ip_access_limit']) > 0 else None
 
 
 app.config['client_info']: dict[str, client_info.ClientInfo] = {}                         # client info dict
-app.config['cache_root'] = pathlib.Path(__file__).parent.absolute() / 'static' / 'cache'  # cache folder
+app.config['cache_root'] = pathlib.Path(__file__).parent.absolute() / 'front_end' / 'cache'  # cache folder
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -117,7 +117,7 @@ def index():
                 question_img.save(str(app.config['cache_root'] / c_uuid / 'question.png'))
                 app.config['client_info'][c_uuid].answer = correct_answer
                 return res
-        return render_template('index.html')
+        return send_from_directory(app.template_folder, 'index.html')
 
 
 @app.route('/human_check', methods=['POST'])
