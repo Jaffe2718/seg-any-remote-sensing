@@ -72,7 +72,7 @@ Clone the repository first.
 
 Use conda to import the environment:
 ```bash
-conda env create -f environment.yml
+conda env create -f environment.yaml
 ```
 And activate the environment:
 ```bash
@@ -161,9 +161,9 @@ It is recommended to use `JavaScript` to interact with the server.
 ### Develop
 Please using `html5` + `css3` + `javascript` to develop the front-end.
 - there must be a `index.html` file in `templates` folder, as the home page.
-- for `*.html` files except `index.html`, please put them in `static` folder.
-- for `*.css`, `*.js` or other static resource files, please put them in `static` folder.
-- when you want to use resources in `static` folder, please use `{{url_for('static', filename='xxx')}}` to get the url.
+- for `*.html` files except `index.html`, please put them in `front_end` folder.
+- for `*.css`, `*.js` or other static resource files, please put them in `front_end` folder.
+- when you want to use resources in `front_end` folder, please use `{{url_for('front_end', filename='xxx')}}` to get the url.
 - it can do `GET` and `POST` requests to the server.
-- please delete the example files in `static`.
+- please delete the example files in `front_end`.
 - please modify the html code in `templates/index.html` to make it more beautiful and useful.

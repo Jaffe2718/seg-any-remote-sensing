@@ -1,6 +1,7 @@
 import numpy as np
 import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
+from flask import render_template
 
 """
 To check the human input
@@ -36,40 +37,4 @@ def make_question() -> tuple[Image.Image, int]:
 
 
 def gen_page(uid: str) -> str:
-    page = """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <link rel="icon" href="static/res/favicon.ico" type="image/x-icon"/>
-            <title>
-                Segment Anything in Remote Sensing Image
-            </title>
-        </head>
-        <body>
-            <h1 style="text-align: center">Human Check</h1>
-            <div style="text-align: center; margin: 0 auto;">
-                <img src="static/cache/{client_uuid}/question.png"
-                 alt="check" style="width: 300px; height: 180px;"/>
-                 <br>
-                <input type="text" 
-                       id="answer" name="answer" 
-                       placeholder="Enter your answer here to pass the human check"
-                       size="40"/>
-                <br>
-                <button onclick="submit()">Submit</button>
-            </div>
-            <script>
-                function submit() {
-                    var answer = document.getElementById("answer").value;
-                    var xhr = new XMLHttpRequest();
-                    xhr.open("POST", "/human_check", true);
-                    xhr.setRequestHeader("Content-Type", "application/json");
-                    xhr.send(JSON.stringify({uuid: "{client_uuid}", answer: answer}));
-                    location.reload();
-                }
-            </script>
-        </body>
-        </html>
-        """.replace('{client_uuid}', uid)
-    return page
+    return render_template("human_check.html").replace('{client_uuid}', uid)
