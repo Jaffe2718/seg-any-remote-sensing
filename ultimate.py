@@ -46,7 +46,7 @@ import socket
 import time
 import uuid
 
-from flask import Flask, request, abort, send_file, jsonify, make_response, send_from_directory
+from flask import Flask, request, abort, send_file, jsonify, make_response, send_from_directory, url_for, redirect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
@@ -117,7 +117,9 @@ def index():
                 question_img.save(str(app.config['cache_root'] / c_uuid / 'question.png'))
                 app.config['client_info'][c_uuid].answer = correct_answer
                 return res
-        return send_from_directory(app.template_folder, 'index.html')
+            if app.config['client_info'][c_uuid].is_human:
+                return redirect("front_end/index.html", code=302, Response=None)
+            # //send_from_directory(app.template_folder, 'index.html'))
 
 
 @app.route('/human_check', methods=['POST'])
