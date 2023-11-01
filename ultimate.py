@@ -118,7 +118,7 @@ def index():
                 app.config['client_info'][c_uuid].answer = correct_answer
                 return res
             if app.config['client_info'][c_uuid].is_human:
-                return redirect("front_end/index.html", code=302, Response=None)
+                return redirect("front_end/quasar-project/dist/spa/index.html", code=302, Response=None)
             # //send_from_directory(app.template_folder, 'index.html'))
 
 
