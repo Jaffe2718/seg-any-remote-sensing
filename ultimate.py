@@ -171,13 +171,16 @@ def handle_upload():
     app.config['client_info'][request.cookies.get('uuid')].preview_raster_png = ''
     app.config['client_info'][request.cookies.get('uuid')].preview_mask_png = ''
     if request.files:
-        raster_file = request.files['file']
-        if raster_file.filename == '':
-            return abort(400, description='no file selected')
-        else:
-            raster_file.save(str(app.config['cache_root'] / request.cookies.get('uuid') / raster_file.filename))
-            app.config['client_info'][request.cookies.get('uuid')].cached_raster = raster_file.filename
-            return 'Upload raster successfully!', 200
+        for key in request.files.keys():
+            raster_file = request.files[key]
+            if raster_file.filename == '':
+                return abort(400, description='no file selected')
+            else:
+                raster_file.save(str(app.config['cache_root'] / request.cookies.get('uuid') / raster_file.filename))
+                app.config['client_info'][request.cookies.get('uuid')].cached_raster = raster_file.filename
+        return 'Upload raster successfully!', 200
+    else:
+        return dir(request), 400
 
 
 @app.route('/upload_cfg', methods=['POST'])
@@ -190,12 +193,13 @@ def handle_upload_cfg():
     if not app.config['client_info'][request.cookies.get('uuid')].is_human:
         return abort(403, description='Invalid Client')
     if request.files:
-        cfg_file = request.files['file']
-        if cfg_file.filename == '':
-            return abort(400, description='no file selected')
-        else:
-            cfg_file.save(str(app.config['cache_root'] / request.cookies.get('uuid') / cfg_file.filename))
-            return 'Upload raster configuration file successfully!', 200
+        for key in request.files.keys():
+            cfg_file = request.files[key]
+            if cfg_file.filename == '':
+                pass
+            else:
+                cfg_file.save(str(app.config['cache_root'] / request.cookies.get('uuid') / cfg_file.filename))
+        return 'Upload raster configuration file successfully!', 200
 
 
 @app.route('/raster_meta', methods=['GET'])
