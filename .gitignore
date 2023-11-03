@@ -2,3 +2,4 @@
 /example/
 /front_end/cache/*
 /.idea/
+/front_end/node_modules/
