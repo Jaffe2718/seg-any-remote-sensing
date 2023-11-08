@@ -28,6 +28,7 @@
 </template>
 
 <script>
+
 export default {
   name: "button-component",
   methods:{
