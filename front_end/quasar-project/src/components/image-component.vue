@@ -8,6 +8,7 @@
   <div>
     <q-uploader url="/upload_cfg"/>
   </div>
+  <q-btn id="test_fetch" @click="function_2"> 测试png转换</q-btn>
 </template>
 
 <script>
@@ -28,6 +29,12 @@ export default {
         const formData = new FormData();
         formData.append('file',file);
         fetch(url,{method:'POST',body:formData}).then(response =>response.json())
+      },
+      function_2(){
+        fetch('/preview_raster', {
+          method: "POST",
+          body: JSON.stringify({r:3,g:2,b:1})
+        })
       }
   }
 }
