@@ -32,8 +32,12 @@ export default {
       },
       function_2(){
         fetch('/preview_raster', {
-          method: "POST",
-          body: JSON.stringify({r:3,g:2,b:1})
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({r: 3, g: 2, b: 1}),
+          credentials: 'include',
         })
       }
   }
