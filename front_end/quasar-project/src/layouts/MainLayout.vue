@@ -9,6 +9,6 @@ import ButtonComponent from "components/button-component.vue";
 import ImageComponent from "components/image-component.vue";
 export default defineComponent({
   name: 'MainLayout',
-  components: {ImageComponent, ButtonComponent},
+  components: {ImageComponent, ButtonComponent,},
 })
 </script>
