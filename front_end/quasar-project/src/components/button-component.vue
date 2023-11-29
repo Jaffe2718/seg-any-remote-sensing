@@ -29,11 +29,9 @@
           <q-card-section>
             <div class="text-h6">地信王的自我介绍</div>
           </q-card-section>
-
           <q-card-section class="q-pt-none">
             <p>大家好，我是王旭升，一个普通的小学生。我的名字寓意着旭日东升，每天都有新的希望和开始。 虽然我有些胆小和懦弱，但我总是努力去尝试新事物，去挑战自己的极限。我喜欢装逼，喜欢摆出各种造型，但我更喜欢帮助他人，为同学们排忧解难，尤其是快乐婆。 我非常喜欢奥特曼，他是我心目中的英雄。他不仅有强大的力量，还有坚定的信念和高尚的品质。我希望自己也能像他一样勇敢、正义、无私。 我认为我是全世界最帅的人，这不是自恋，而是自信。我有一双明亮的眼睛，一个挺拔的鼻子，和一张能说会道的嘴巴。我会时常照镜子，欣赏自己的帅气，也会学习各种表情和造型，为自己的形象加分。 总之，我是一个喜欢挑战自己、追求快乐、充满自信的小学生。希望大家能够喜欢我，和我一起度过愉快的时光。谢谢大家！</p>
           </q-card-section>
-
           <q-card-actions align="right">
             <q-btn flat label="fuck me" color="primary" v-close-popup />
             <q-btn flat label="i am sb" color="primary" v-close-popup />
@@ -65,11 +63,9 @@
           <q-card-section>
             <div class="text-h6">地信王的自我介绍</div>
           </q-card-section>
-
           <q-card-section class="q-pt-none">
             <p>大家好，我是王旭升，一个普通的小学生。我的名字寓意着旭日东升，每天都有新的希望和开始。 虽然我有些胆小和懦弱，但我总是努力去尝试新事物，去挑战自己的极限。我喜欢装逼，喜欢摆出各种造型，但我更喜欢帮助他人，为同学们排忧解难，尤其是快乐婆。 我非常喜欢奥特曼，他是我心目中的英雄。他不仅有强大的力量，还有坚定的信念和高尚的品质。我希望自己也能像他一样勇敢、正义、无私。 我认为我是全世界最帅的人，这不是自恋，而是自信。我有一双明亮的眼睛，一个挺拔的鼻子，和一张能说会道的嘴巴。我会时常照镜子，欣赏自己的帅气，也会学习各种表情和造型，为自己的形象加分。 总之，我是一个喜欢挑战自己、追求快乐、充满自信的小学生。希望大家能够喜欢我，和我一起度过愉快的时光。谢谢大家！</p>
           </q-card-section>
-
           <q-card-actions align="right">
             <q-btn flat label="fuck me" color="primary" v-close-popup />
             <q-btn flat label="i am sb" color="primary" v-close-popup />
@@ -78,12 +74,20 @@
       </q-dialog>
     </q-btn-group>
   </div>
+
 </template>
 
 <script>
 import {ref} from 'vue'
 export default {
+  data()
+  {
+    return{
+
+    }
+  },
   setup(){
+    //const image_src=ref("Hello World!")
     return{
       explain: ref(false),
       about:ref(false)
@@ -91,6 +95,7 @@ export default {
   },
   name: "button-component",
   methods:{
+
     menu_function_1(){
       alert("该功能开发中！")
     },
@@ -103,18 +108,41 @@ export default {
     logo_function(){
       window.open("https://www.hunnu.edu.cn/")
     },
+
+    function_1() {
+      const url = "/upload"
+      const fileInput = document.getElementById('fileInput')
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append('file', file);
+      fetch(url, {method: 'POST', body: formData}).then(response => response.json())
+    },
+    function_2()
+    {
+      fetch('/preview_raster', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({r: 3, g: 2, b: 1}),
+        credentials: 'include',
+      })
+    }
+
   }
 }
-
 </script>
-
 <style >
+#uploader{
+  width: 310px;
+  border: #64b5f6;
+}
 #bt-dr{
   width: 310px;
   height: 65px;
 }
 #menu-function-btn{
-  width: 300px;
+  width: 310px;
   height: 100px;
 }
 #btn-group{
