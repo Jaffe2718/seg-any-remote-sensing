@@ -52,25 +52,6 @@ export default {
     }
   },
   mounted() {
-    // function function_1() {
-    //   const url = "/upload"
-    //   const fileInput = document.getElementById('fileInput')
-    //   const file = fileInput.files[0];
-    //   const formData = new FormData();
-    //   formData.append('file', file);
-    //   fetch(url, {method: 'POST', body: formData}).then(response => response.json())
-    // }
-    // function function_2()
-    // {
-    //   fetch('/preview_raster', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({r: 3, g: 2, b: 1}),
-    //     credentials: 'include',
-    //   })
-    // }
     this.initMap();
   },
   methods: {
@@ -161,13 +142,6 @@ export default {
       });
       this.map = new Map({
         layers: [
-          // new ImageLayer({
-          //   source: new Static({
-          //     url: this.file_name,
-          //     projection: projection,
-          //     imageExtent: extent,
-          //   }),
-          // }),
         ],
         target: 'map',
         view: new View({
@@ -177,17 +151,11 @@ export default {
           maxZoom: 8,
         }),
       });
-
     },
-
-
   },
 }
-
 </script>
-
 <style >
-
 .map {
   height: 680px;
   width: 600px;

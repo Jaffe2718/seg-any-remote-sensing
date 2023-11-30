@@ -37,7 +37,10 @@ export default {
     },
   data(){
       return{
-        mask_result_src:""//分割后图像的地址
+        mask_result_src:"",//分割后图像的地址
+        bar:ref(false),
+        completion:ref(false),
+        download_license:ref(false)
       }
   },
     methods:{
@@ -89,7 +92,7 @@ export default {
             fetch('/preview_mask',{
               method:'GET'
             })
-                   const cookies=document.cookie.split(";")
+            const cookies=document.cookie.split(";")
       const cookieObj={}
       for (let i = 0; i < cookies.length; i++)
       {
@@ -98,13 +101,15 @@ export default {
         cookieObj[key] = value;
       }
       this.mask_result_src="/front_end/cache/"+cookieObj['uuid']+"/"+"result_out.tif.mask.png"
+            alert(this.mask_result_src)
         const extent = [100, 100, 500, 480];
         const projection = new Projection({
           code: 'xkcd-image',
           units: 'pixels',
           extent: extent,
         });
-        const layer=new ImageLayer({
+        const layer=new ImageLayer
+        ({
           source:new Static({
             url: this.mask_result_src,//到时候替换成image_src
             projection: projection,
@@ -112,18 +117,24 @@ export default {
           })
         })
         this.use_map.addLayer(layer)
-          }
-        )
+            this.bar=false
+            this.completion=true
+            this.download_license = true
+          })
           .catch(error=>{
             console.error(error)
           })
-
+        this.bar=true
       },
       download_img()//下载分割后的图像
       {
-        fetch('/download',{
-          method:'GET'
-        })
+        if(this.download_license == false)
+        {
+          alert("请得到遥感图像后再使用")
+        }
+        else {
+          window.open("/download")
+        }
       }
     },
 
@@ -359,11 +370,49 @@ export default {
             </q-stepper>
         </div>
     </q-form>
-
+  <q-dialog v-model="bar" >
+    <q-card id="bar_dialog">
+      <label id="bar_label">图像分割可能需要加载一段时间....</label>
+      <br>
+      <q-circular-progress
+        indeterminate
+        size="90px"
+        color="lime"
+        class="q-ma-md"
+        id="bar_progress"
+      />
+    </q-card>
+  </q-dialog>
+  <q-dialog v-model="completion">
+    <q-card style="width: 300px">
+      <q-card-section>
+        <div class="text-h6">通知</div>
+      </q-card-section>
+      <q-card-section class="q-pt-none">
+        遥感图像分割完毕
+      </q-card-section>
+      <q-card-actions align="right" class="bg-white text-teal">
+        <q-btn flat label="OK" v-close-popup />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+  <q-btn color="primary" label="点击此处下载处理结果" @click="download_img"></q-btn>
 </template>
 
 <style scoped>
 .q-pa-md {
 //height: 500px;
+}
+#bar_dialog{
+  width: 500px;
+  height: 200px;
+}
+#bar_label{
+  font-size: 30px;
+  font-family: 微软雅黑;
+}
+#bar_progress{
+  bottom: -20px;
+  left: 180px;
 }
 </style>
