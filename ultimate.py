@@ -360,6 +360,8 @@ def handle_download():
 
 
 if __name__ == '__main__':
+    if not os.path.exists(str(app.config['cache_root'])):
+        os.makedirs(str(app.config['cache_root']))
     print(__doc__)
     for root, dirs, files in os.walk(str(app.config['cache_root'])):  # clean the cache folder first
         for file in files:
