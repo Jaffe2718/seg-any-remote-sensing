@@ -1,6 +1,5 @@
 <template>
   <div><button-component ref="sonRef"></button-component></div>
-  <div id="map" class="map"></div>
   <q-uploader
     ref="uploader"
     id="uploader"
@@ -10,11 +9,18 @@
     name="file"
     @added="onFileAdded"
   />
-<!--    <div><q-btn @click="function_2">加载png</q-btn></div>-->
-  <div><q-btn @click="function_3">点击此处加载图片</q-btn></div>
-  <SPS @fatherMethod="add_preview" :use_map="map"></SPS>
+  <div><q-btn @click="function_3" :ripple="false" color="secondary"  no-caps size="20px">点击此处加载图片</q-btn></div>
+  <div id="switch_map">
   <q-btn @click="changeMap(1)">原图</q-btn>
   <q-btn @click="changeMap(2)">分割过后的图</q-btn>
+  </div>
+  <div id="map" class="map"></div>
+
+
+<!--    <div><q-btn @click="function_2">加载png</q-btn></div>-->
+
+  <SPS @fatherMethod="add_preview" :use_map="map"></SPS>
+
 
 </template>
 <script>
@@ -52,25 +58,6 @@ export default {
     }
   },
   mounted() {
-    // function function_1() {
-    //   const url = "/upload"
-    //   const fileInput = document.getElementById('fileInput')
-    //   const file = fileInput.files[0];
-    //   const formData = new FormData();
-    //   formData.append('file', file);
-    //   fetch(url, {method: 'POST', body: formData}).then(response => response.json())
-    // }
-    // function function_2()
-    // {
-    //   fetch('/preview_raster', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({r: 3, g: 2, b: 1}),
-    //     credentials: 'include',
-    //   })
-    // }
     this.initMap();
   },
   methods: {
@@ -104,7 +91,6 @@ export default {
     },
     onFileAdded(file) {
       this.file_name = file[0].name
-      console.log('File name', file[0].name)
     },
     function_3()
     {
@@ -125,8 +111,6 @@ export default {
         }
         this.img_src="/front_end/cache/"+cookieObj['uuid']+"/"+this.file_name+".pre.png"
         this.image_src="/front_end/cache/"+cookieObj['uuid']+"/"+this.file_name+".pre.png"
-        alert("img_src:"+this.img_src)
-        console.log(cookieObj['uuid'])
         const extent = [100, 100, 500, 480];
         const projection = new Projection({
           code: 'xkcd-image',
@@ -161,13 +145,6 @@ export default {
       });
       this.map = new Map({
         layers: [
-          // new ImageLayer({
-          //   source: new Static({
-          //     url: this.file_name,
-          //     projection: projection,
-          //     imageExtent: extent,
-          //   }),
-          // }),
         ],
         target: 'map',
         view: new View({
@@ -177,17 +154,11 @@ export default {
           maxZoom: 8,
         }),
       });
-
     },
-
-
   },
 }
-
 </script>
-
 <style >
-
 .map {
   height: 680px;
   width: 600px;
@@ -199,5 +170,8 @@ export default {
   height: 680px;
   border: 1px solid #000;
   margin-top: -680px;
+}
+#switch_map{
+  margin-left: 620px;
 }
 </style>
