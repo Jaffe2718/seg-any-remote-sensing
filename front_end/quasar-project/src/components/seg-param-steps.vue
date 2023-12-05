@@ -44,9 +44,6 @@ export default {
       }
   },
     methods:{
-      child_f(){
-        alert(this.use_map)
-      },
         ToInt_side(){
             this.value_side=Math.round(this.value_side)//Math.round代表四舍五入
         },
@@ -79,7 +76,6 @@ export default {
         }
         console.log(json_obj)
         console.log(JSON.stringify(json_obj))
-        alert("Hello World!")
         fetch('/segment', {
           method: 'POST',
           headers: {
@@ -101,7 +97,6 @@ export default {
         cookieObj[key] = value;
       }
       this.mask_result_src="/front_end/cache/"+cookieObj['uuid']+"/"+"result_out.tif.mask.png"
-            alert(this.mask_result_src)
         const extent = [100, 100, 500, 480];
         const projection = new Projection({
           code: 'xkcd-image',

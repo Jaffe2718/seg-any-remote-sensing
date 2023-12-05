@@ -1,25 +1,6 @@
 <template>
   <div class="menu-drop">
     <q-btn-group id="btn-group">
-      <q-btn-dropdown id="bt-dr" color="light-blue-7" label="菜单栏">
-        <q-list>
-          <q-item id="menu-function-btn" clickable v-close-popup @click="menu_function_1">
-            <q-item-section>
-              <q-item-label>功能一</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item id="menu-function-btn" clickable v-close-popup @click="menu_function_2">
-            <q-item-section>
-              <q-item-label>功能二</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item id="menu-function-btn" clickable v-close-popup @click="menu_function_3">
-            <q-item-section>
-              <q-item-label>功能三</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
       <q-btn id="logo" @click="logo_function">
         <img src="logo.png" alt="" id="logo-img">
       </q-btn>
@@ -38,25 +19,6 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
-      <q-btn-dropdown id="btn_url" color="light-blue-7" label="常用链接">
-        <q-list>
-          <q-item id="url-function-btn" clickable v-close-popup href="http://dlkx.hunnu.edu.cn/info/1767/5240.htm" target="_blank">
-            <q-item-section>
-              <q-item-label>链接一</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item id="url-function-btn" clickable v-close-popup href="https://yxysz.sysu.edu.cn/zh-hans/node/242" target="_blank" >
-            <q-item-section>
-              <q-item-label>链接二</q-item-label>
-            </q-item-section>
-          </q-item>
-          <q-item id="url-function-btn" clickable v-close-popup href="https://www.ais.cn/mentor/mentorDetail/9eb9386d-5e3c-11ec-b045-a85e45a23623" target="_blank" >
-            <q-item-section>
-              <q-item-label>链接三</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
       <q-btn id="btn_about" color="light-blue-7" @click="about = true" label="关于我们"/>
       <q-dialog v-model="about" transition-show="rotate" transition-hide="rotate">
         <q-card>
