@@ -1,6 +1,7 @@
 <script>
 
 import {ref} from "vue";
+
 import {Projection} from "ol/proj";
 import ImageLayer from "ol/layer/Image";
 import Static from "ol/source/ImageStatic";
@@ -35,6 +36,7 @@ export default {
             inputValue:ref(1),
         }
     },
+
   data(){
       return{
         mask_result_src:""//分割后图像的地址
@@ -126,7 +128,6 @@ export default {
         })
       }
     },
-
 }
 
 </script>
@@ -322,6 +323,7 @@ export default {
                                 @blur="ToInt_factor"
                             />
                         </div>
+
                       <b>min_mask_region_area</b>
                       <div class="q-pa-md">
                         <q-form :rules="rules.inputRules">
@@ -359,7 +361,6 @@ export default {
             </q-stepper>
         </div>
     </q-form>
-
 </template>
 
 <style scoped>
