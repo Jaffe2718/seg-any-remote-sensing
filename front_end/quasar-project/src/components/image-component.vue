@@ -1,26 +1,29 @@
 <template>
   <div><button-component ref="sonRef"></button-component></div>
-  <q-uploader
-    ref="uploader"
-    id="uploader"
-    url="/upload"
-    no-thumbnails
-    square
-    name="file"
-    @added="onFileAdded"
-  />
-  <div><q-btn @click="function_3" :ripple="false" color="secondary"  no-caps size="20px">点击此处加载图片</q-btn></div>
-  <div id="switch_map">
-  <q-btn @click="changeMap(1)">原图</q-btn>
-  <q-btn @click="changeMap(2)">分割过后的图</q-btn>
+  <div id="image_all">
+    <div id="image_all2">
+      <div class="JZ">
+        <q-uploader
+          ref="uploader"
+          id="uploader"
+          url="/upload"
+          no-thumbnails
+          square
+          name="file"
+          @added="onFileAdded"
+        />
+        <div><q-btn @click="function_3" :ripple="false" color="secondary"  no-caps size="20px" style="width: 310px">点击此处加载图片</q-btn></div>
+      </div>
+      <div id="switch_map">
+        <q-btn @click="changeMap(1)">原图</q-btn>
+        <q-btn @click="changeMap(2)">分割过后的图</q-btn>
+      </div>
+      <div id="map" class="map"></div>
+    </div>
   </div>
-  <div id="map" class="map"></div>
 
-
-<!--    <div><q-btn @click="function_2">加载png</q-btn></div>-->
-
-  <SPS @fatherMethod="add_preview" :use_map="map"></SPS>
-
+    <!--    <div><q-btn @click="function_2">加载png</q-btn></div>-->
+    <SPS @fatherMethod="add_preview" :use_map="map"></SPS>
 
 </template>
 <script>
@@ -160,10 +163,13 @@ export default {
 </script>
 <style >
 .map {
-  height: 680px;
-  width: 600px;
-  margin-left: 400px;
-  border: 1px solid #000;
+  height: 620px;
+  width: 850px;
+  //border: 1px solid #000;
+  box-shadow: 0 0 3px ;
+  position: relative;
+  left: 400px;
+  top:30px;
 }
 #content_data{
   width: 400px;
@@ -171,7 +177,25 @@ export default {
   border: 1px solid #000;
   margin-top: -680px;
 }
+.JZ{
+  position: absolute;
+  top: 30px;
+  left: 50px;
+}
 #switch_map{
-  margin-left: 620px;
+  position: absolute;
+  top:30px;
+  left:1074px;
+  z-index: 9;
+}
+#image_all{
+  height: 680px;
+  margin: 10px 15px 0 15px;
+  box-shadow: 0 0 5px rgb(200,200,200);
+  position: relative;
+}
+#image_all2{
+  position: relative;
+  left:50px
 }
 </style>

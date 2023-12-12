@@ -46,15 +46,38 @@ export default {
     methods:{
         ToInt_side(){
             this.value_side=Math.round(this.value_side)//Math.round代表四舍五入
+            if(this.value_side<0){
+              this.value_side=64;
+              alert("值不能小于0！")
+            }
         },
         ToInt_batch() {
             this.value_batch=Math.round(this.value_batch)
+            if(this.value_batch<0){
+              this.value_batch=64;
+              alert("值不能小于0！")
+            }
         },
         ToInt_layers(){
             this.value_layers=Math.round(this.value_layers)
+            if(this.value_layers<0){
+              this.value_layers=0;
+              alert("值不能小于0！")
+            }
         },
         ToInt_factor(){
             this.value_factor=Math.round(this.value_factor)
+            if(this.value_factor<0){
+              this.value_factor=1;
+              alert("值不能小于0！")
+            }
+        },
+        ToInt_min_mask(){
+            this.value_min_mask=Math.round(this.value_min_mask)
+            if(this.value_min_mask<0){
+              this.value_min_mask=100;
+              alert("值不能小于0！")
+            }
         },
       add_pr(){//参数设置完毕后，进行图像分割
           // this.$emit('fatherMethod');//子控件调用父控件,
@@ -151,7 +174,7 @@ export default {
             >
                 <q-step
                     :name="1"
-                    title="Select campaign settings"
+                    title="Sampling parameters"
                     icon="settings"
                     :done="step > 1"
                 >
@@ -202,8 +225,7 @@ export default {
 
                 <q-step
                     :name="2"
-                    title="Create an ad group"
-                    caption="Optional"
+                    title="Filtering parameters"
                     icon="create_new_folder"
                     :done="step > 2"
                 >
@@ -236,7 +258,7 @@ export default {
                         </div>
                     </div>
                     <div style="margin-top: 30px">
-                        <b>Stability_Score_Offset</b>
+                        <b>Stability Score Offset</b>
                         <div class="q-pa-md">
                             <q-slider
                                 v-model="value_offset"
@@ -257,12 +279,12 @@ export default {
 
                 <q-step
                     :name="3"
-                    title="Ad template"
+                    title="Model parameters"
                     icon="assignment"
                     :done="step > 3"
                 >
                     <div style="margin-top: 30px">
-                        <b>Box_Nms_Thresh</b>
+                        <b>Box Nms Thresh</b>
                         <div class="q-pa-md">
                             <q-slider
                                 v-model="value_box"
@@ -276,7 +298,7 @@ export default {
                         </div>
                     </div>
                     <div style="margin-top: 30px">
-                        <b>Crop_N_Layers</b>
+                        <b>Crop N Layers</b>
                         <div class="q-pa-md">
                             <q-input
                                 v-model.number="value_layers"
@@ -289,7 +311,7 @@ export default {
                         </div>
                     </div>
                     <div style="margin-top: 30px">
-                        <b>Crops_Nms_Thresh</b>
+                        <b>Crops Nms Thresh</b>
                         <div class="q-pa-md">
                             <q-slider
                                 v-model="value_crop"
@@ -303,7 +325,7 @@ export default {
                         </div>
                     </div>
                     <div style="margin-top: 30px">
-                        <b>Crop_Overlap_Ratio</b>
+                        <b>Crop Overlap Ratio</b>
                         <div class="q-pa-md">
                             <q-slider
                                 v-model="value_ratio"
@@ -317,7 +339,7 @@ export default {
                         </div>
                     </div>
                     <div style="margin-top: 30px">
-                        <b>Crop_N_Points_Downscale_Factor</b>
+                        <b>Crop N Points Downscale Factor</b>
                         <div class="q-pa-md">
                             <q-input
                                 v-model.number="value_factor"
@@ -337,7 +359,7 @@ export default {
                             min="1"
                             filled
                             style="max-width: 200px"
-                            @blur="ToInt_batch"
+                            @blur="ToInt_min_mask"
                           />
                         </q-form>
                       </div>
@@ -350,12 +372,11 @@ export default {
 
                 <q-step
                     :name="4"
-                    title="Create an ad"
+                    title="Finish"
                     icon="add_comment"
                 >
-                    Try out different ad text to see what brings in the most customers, and learn how to
-                    enhance your ads using features like ad extensions. If you run into any problems with
-                    your ads, find out how to tell if they're running and how to resolve approval issues.
+                  You have completed all the parameter settings, please confirm that the input is correct.
+                  Click "Finish" to start the image splitting, or click "Back" to go back to check.
 
                     <q-stepper-navigation>
                         <q-btn color="primary" label="Finish" @click="add_pr" />
@@ -391,7 +412,7 @@ export default {
       </q-card-actions>
     </q-card>
   </q-dialog>
-  <q-btn color="primary" label="点击此处下载处理结果" @click="download_img"></q-btn>
+  <q-btn id="download" color="primary" label="点击此处下载处理结果" @click="download_img"></q-btn>
 </template>
 
 <style scoped>
@@ -409,5 +430,10 @@ export default {
 #bar_progress{
   bottom: -20px;
   left: 180px;
+}
+#download{
+  position: absolute;
+  top:690px;
+  left:1144px;
 }
 </style>
