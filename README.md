@@ -1,13 +1,35 @@
 # Segment Anything in Remote Sensing Image
 
+## Main Developers
+
+### Back-end: 
+
+- [李昌哲 202130163019](https://github.com/Jaffe2718)
+
+### Front-end:
+
+- [sirasuazusa](https://github.com/sirasuazusa)
+- [Curry Young](https://github.com/Xizhe03)
+
 ## Introduction
 
-This is a server-side application that uses the Meta's large model, Segment Anything, originally used for general image segmentation, to perform segmentation processing on remote sensing images.
+This is a server-side application that uses the Meta's large model named [Segment Anything](https://segment-anything.com/), originally used for general image segmentation, to perform segmentation processing on remote sensing images.
+For the server application operators, they should set up this application on their server host machine, and run the application in the background to servers on public IPs or LAN IPs.
+For the common users, they only need to open the URL of the server application in their browser, and then they can upload remote sensing images and configuration files to the server, and then they can view the metadata of the remote sensing images, preview the remote sensing images, segment the remote sensing images, preview the segmentation results, and download the segmentation results.
+
+<img src="doc/hunnu.png" alt="hunnu">
+<div style="text-align: center;">Figure 1. The remote sensing image of Hunan Normal University (example dataset)</div>
+
+<img src="doc/result_mask.png" alt="result_mask">
+<div style="text-align: center;">Figure 2. The segmentation result of the remote sensing image of Hunan Normal University (example dataset)</div>
+
+<img src="doc/UserClient.jpg" alt="UserClient">
+<div style="text-align: center;">Figure 3. The UI of the client</div>
 
 ## Dependencies
 
 | Name    | Version | Description                                                        |
-|:------- |:------- |:------------------------------------------------------------------ |
+|:--------|:--------|:-------------------------------------------------------------------|
 | Python  | 3.11.x  | Anaconda is recommended                                            |
 | git     | xx.xx.x | Version control                                                    |
 | Node.js | 18.x.x  | Front-end development                                              |
@@ -21,7 +43,7 @@ This is a server-side application that uses the Meta's large model, Segment Anyt
 git clone https://github.com/Jaffe2718/seg-any-remote-sensing.git
 ```
 
-### Setup the back-end conda environment
+### Set up the back-end conda environment
 
 ```bash
 conda env create -f environment.yaml
@@ -55,13 +77,25 @@ Download [ViT-H SAM model](https://dl.fbaipublicfiles.com/segment_anything/sam_v
 
 ## Usage
 
-### Run the server application on your server host machine
-
+### For server application operators
+1. Run the server application on your server host machine
 ```bash
 python ultimate.py
 ```
 
-### Remember the URL shown in the back-end terminal, then open it in your browser on the client device
+2. Configuration (optional)
+- You can modify the configuration file `configuration.json` to set the server's hostname, port, whether to enable debug mode, whether to enable multi-threading mode, IP access frequency limit, etc.
+  There are the following configuration items:
+> - "host": **String**, the hostname of the server, default is "auto", means the ipv4 address of the server host machine.<br>
+> - "port": **Integer**, the port of the server, default is 5000.<br>
+> - "debug": **Boolean**, whether to enable debug mode, default is false.
+> - "multi_thread": **Boolean**, whether to enable multi-threading mode, default is true.
+> - "ip_access_limit": **JsonArray**, the IP access frequency limit, each item is a **String**, here are some examples:
+> > "ip_access_limit": ["10/minute", "100/hour", "1000/day"]<br>
+
+### For common users
+
+- Just open the URL of the server application in your browser, and then you can upload remote sensing images and configuration files to the server, and then you can view the metadata of the remote sensing images, preview the remote sensing images, segment the remote sensing images, preview the segmentation results, and download the segmentation results.
 
 ## Work Principle
 
@@ -214,6 +248,9 @@ Using a SAM model, generates masks for the entire image.
 ## Development
 
 see [DEV.md](DEV.md)
+
+## Open Source License
+[Apache License 2.0](LICENSE)
 
 ## Reference
 
