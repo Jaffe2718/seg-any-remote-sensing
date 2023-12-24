@@ -1,21 +1,21 @@
 <template>
   <div class="menu-drop">
-    <q-btn-group id="btn-group">
-      <q-btn id="logo" @click="logo_function">
-        <img src="logo.png" alt="" id="logo-img">
-      </q-btn>
+    <div id="logo" @click="logo_function">
+      <img src="logo2.png" alt="" id="logo-img">
+    </div>
+
       <q-btn id="btn_exp" label="使用说明" color="light-blue-7" @click="explain = true" />
       <q-dialog v-model="explain" transition-show="rotate" transition-hide="rotate">
         <q-card>
           <q-card-section>
-            <div class="text-h6">地信王的自我介绍</div>
+            <div class="text-h6">怎么用？</div>
           </q-card-section>
           <q-card-section class="q-pt-none">
-            <p>大家好，我是王旭升，一个普通的小学生。我的名字寓意着旭日东升，每天都有新的希望和开始。 虽然我有些胆小和懦弱，但我总是努力去尝试新事物，去挑战自己的极限。我喜欢装逼，喜欢摆出各种造型，但我更喜欢帮助他人，为同学们排忧解难，尤其是快乐婆。 我非常喜欢奥特曼，他是我心目中的英雄。他不仅有强大的力量，还有坚定的信念和高尚的品质。我希望自己也能像他一样勇敢、正义、无私。 我认为我是全世界最帅的人，这不是自恋，而是自信。我有一双明亮的眼睛，一个挺拔的鼻子，和一张能说会道的嘴巴。我会时常照镜子，欣赏自己的帅气，也会学习各种表情和造型，为自己的形象加分。 总之，我是一个喜欢挑战自己、追求快乐、充满自信的小学生。希望大家能够喜欢我，和我一起度过愉快的时光。谢谢大家！</p>
+            <p>请询问专业人员！</p>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn flat label="fuck me" color="primary" v-close-popup />
-            <q-btn flat label="i am sb" color="primary" v-close-popup />
+            <q-btn flat label="OK" color="primary" v-close-popup />
+            <q-btn flat label="CLOSE" color="primary" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -23,18 +23,18 @@
       <q-dialog v-model="about" transition-show="rotate" transition-hide="rotate">
         <q-card>
           <q-card-section>
-            <div class="text-h6">地信王的自我介绍</div>
+            <div class="text-h6">我们组</div>
           </q-card-section>
           <q-card-section class="q-pt-none">
-            <p>大家好，我是王旭升，一个普通的小学生。我的名字寓意着旭日东升，每天都有新的希望和开始。 虽然我有些胆小和懦弱，但我总是努力去尝试新事物，去挑战自己的极限。我喜欢装逼，喜欢摆出各种造型，但我更喜欢帮助他人，为同学们排忧解难，尤其是快乐婆。 我非常喜欢奥特曼，他是我心目中的英雄。他不仅有强大的力量，还有坚定的信念和高尚的品质。我希望自己也能像他一样勇敢、正义、无私。 我认为我是全世界最帅的人，这不是自恋，而是自信。我有一双明亮的眼睛，一个挺拔的鼻子，和一张能说会道的嘴巴。我会时常照镜子，欣赏自己的帅气，也会学习各种表情和造型，为自己的形象加分。 总之，我是一个喜欢挑战自己、追求快乐、充满自信的小学生。希望大家能够喜欢我，和我一起度过愉快的时光。谢谢大家！</p>
+            <p>我们组是这样的</p>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn flat label="fuck me" color="primary" v-close-popup />
-            <q-btn flat label="i am sb" color="primary" v-close-popup />
+            <q-btn flat label="OK" color="primary" v-close-popup />
+            <q-btn flat label="CLOSE" color="primary" v-close-popup />
           </q-card-actions>
         </q-card>
       </q-dialog>
-    </q-btn-group>
+
   </div>
 
 </template>
@@ -113,6 +113,7 @@ export default {
 #logo {
   width: 310px;
   height: 65px;
+  float: right;
 }
 #logo-img{
   width: 280px;
@@ -135,5 +136,9 @@ export default {
 #url-function-btn{
   width: 300px;
   height: 100px;
+}
+.menu-drop{
+  background: dodgerblue;
+  box-shadow: 0 0 5px 2px rgb(100,100,100);
 }
 </style>
