@@ -11,6 +11,9 @@
 - [sirasuazusa](https://github.com/sirasuazusa)
 - [Curry Young](https://github.com/Xizhe03)
 
+## Source Repository
+[Jaffe2718/seg-any-remote-sensing](https://github.com/Jaffe2718/seg-any-remote-sensing)
+
 ## Introduction
 
 This is a server-side application that uses the Meta's large model named [Segment Anything](https://segment-anything.com/), originally used for general image segmentation, to perform segmentation processing on remote sensing images.
@@ -28,45 +31,45 @@ For the common users, they only need to open the URL of the server application i
 
 ## Dependencies
 
-| Name    | Version | Description                                                        |
-|:--------|:--------|:-------------------------------------------------------------------|
-| Python  | 3.11.x  | Anaconda is recommended                                            |
-| git     | xx.xx.x | Version control                                                    |
-| Node.js | 18.x.x  | Front-end development                                              |
-| misc    |         | see `requirements.txt` and `front_end/quasar-project/package.json` |
+| Name    | Version | Description                                                                                                          |
+|:--------|:--------|:---------------------------------------------------------------------------------------------------------------------|
+| Python  | 3.11.x  | Anaconda is recommended                                                                                              |
+| git     | xx.xx.x | Version control                                                                                                      |
+| Node.js | 18.x.x  | Front-end development                                                                                                |
+| misc    |         | see [seg-any-remote-sensing\|dependencies](https://github.com/Jaffe2718/seg-any-remote-sensing/network/dependencies) |
 
 ## Installation
 
 ### Clone the repository
 
-```bash
+```shell
 git clone https://github.com/Jaffe2718/seg-any-remote-sensing.git
 ```
 
 ### Set up the back-end conda environment
 
-```bash
+```shell
 conda env create -f environment.yaml
 conda activate seg_any
 ```
 
 ### Install the back-end package
 
-```bash
+```shell
 pip install git+https://github.com/facebookresearch/segment-anything.git
 pip install -r requirements.txt
 ```
 
 ### Setup the front-end node environment
 
-```bash
+```shell
 cd front_end/quasar-project
 npm install
 ```
 
 ### Build the front-end
 
-```bash
+```shell
 cd front_end/quasar-project
 quasar build
 ```
@@ -79,7 +82,7 @@ Download [ViT-H SAM model](https://dl.fbaipublicfiles.com/segment_anything/sam_v
 
 ### For server application operators
 1. Run the server application on your server host machine
-```bash
+```shell
 python ultimate.py
 ```
 
